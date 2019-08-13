@@ -1,0 +1,87 @@
+syntax = "proto3";
+
+package users;
+
+import "google/protobuf/timestamp.proto";
+
+service UsersService {
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (User) {}
+  rpc GetUser(GetUserRequest) returns (User) {}
+  rpc UpdateUser(UpdateUserRequest) returns (User) {}
+  rpc GetAuthToken(GetAuthTokenRequest) returns (GetAuthTokenResponse) {}
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+
+}
+
+message ListUsersRequest {
+  int32 route_id = 1;
+  EnumOrderBy order_by = 2;
+  int32 page_size = 3;
+  string page_token = 4;
+  int32 since = 5;
+}
+
+message CreateUserRequest {
+  string name = 1;
+  repeated string roles = 2;
+  int32 route_id = 3;
+  string password = 4;
+}
+
+message GetUserRequest {
+  int32 id = 1;
+}
+
+message UpdateUserRequest {
+  int32 id = 1;
+  string name = 2;
+  string password = 3;
+  int32 route_id = 4;
+  repeated string roles = 5;
+}
+
+message User {
+  int32 id = 1;
+  string name = 2;
+  repeated string roles = 3;
+  int32 route_id = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
+
+message ListUsersResponse {
+  repeated User users = 1;
+  string next_page_token = 2;
+  int32 revision = 3;
+}
+
+message GetAuthTokenRequest {
+  string email = 1;
+  string password = 2;
+  string push_token = 3;
+  string account_code = 4;
+}
+
+message GetAuthTokenResponse {
+  string token = 1;
+  repeated string roles = 2;
+  int32 account_id = 3;
+  string refresh_token = 4;
+  int32 user_id = 5;
+  string default_email = 6;
+}
+
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string token = 1;
+}
+
+enum EnumOrderBy {
+  DESC = 0;
+  ASC = 1;
+}
